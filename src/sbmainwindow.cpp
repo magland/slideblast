@@ -63,7 +63,7 @@ SBMainWindow::SBMainWindow() {
 
     d->add_parameter("audio_recording_command","Audio recording command","arecord -f S16_LE -r 24000 -d 0 $AUDIO_FILE$");
     d->add_parameter("screen_capture_command","Screen capture command","shutter -a --output=$WORKDIR$/shutter-%Y-%m-%d-%T.jpg -e");
-    d->add_parameter("resize_images_command","Resize images command","convert '$WORKDIR$/*.jpg' -resize 2000x1200 -background black -gravity center -extent 2000x1200 $WORKDIR$/resized%03d.jpg");
+    d->add_parameter("resize_images_command","Resize images command","convert '$WORKDIR$/*.jpg' -resize 1600x900 -background black -gravity center -extent 1600x900 $WORKDIR$/resized%03d.jpg");
     d->add_parameter("build_movie_command","Build movie command","ffmpeg -framerate $FPS$ -pattern_type glob -i '$WORKDIR$/resized*.jpg' -i $AUDIO_FILE$ -c:v libx264 -r 10 -shortest -strict -2 $OUTPUT_FILE$");
     d->add_parameter("concat_movie_command","Concat movie command","ffmpeg -f concat -i $INPUT_TXT_FILE$ -codec copy $FINAL_OUTPUT_FILE$");
     d->add_parameter("fps","Frames per second","0.25");

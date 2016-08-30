@@ -11,3 +11,4 @@ SOURCES += main.cpp\
 
 HEADERS  += sbmainwindow.h \
     screenshooter.h
+
