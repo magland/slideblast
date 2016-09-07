@@ -52,9 +52,10 @@ void ScreenShooter::start()
 
 void ScreenShooter::stop()
 {
-    if (d->m_num_screenshots_taken==0) {
-        d->take_screenshot(); //take at least one screenshot
-    }
+    //if (d->m_num_screenshots_taken==0) {
+    //    d->take_screenshot(); //take at least one screenshot
+    //}
+    d->take_screenshot(); //take one last screenshot
     d->m_shooting=false;
 }
 
