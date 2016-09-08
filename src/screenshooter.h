@@ -14,6 +14,7 @@ public:
     ScreenShooter();
     virtual ~ScreenShooter();
     void setCommand(QString cmd);
+    void setWorkingDirectory(QString path);
     void setFramesPerSecond(double fps);
     void setDelay(double delay_sec);
     void start();

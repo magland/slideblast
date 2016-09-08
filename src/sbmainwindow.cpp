@@ -113,6 +113,7 @@ void SBMainWindow::slot_start_recording()
         cmd=d->preprocess_command(cmd,d->m_current_segment_number);
         d->m_screen_shooter.stop();
         d->m_screen_shooter.setCommand(cmd);
+        d->m_screen_shooter.setWorkingDirectory(d->m_working_directory);
         d->m_screen_shooter.setFramesPerSecond(fps);
         d->m_screen_shooter.setDelay(screenshot_delay);
         d->m_screen_shooter.start();

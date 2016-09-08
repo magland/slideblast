@@ -1,5 +1,6 @@
 #include "screenshooter.h"
 
+#include <QDir>
 #include <QProcess>
 #include <QTime>
 #include <QTimer>
@@ -14,8 +15,10 @@ public:
     int m_num_screenshots_taken=0;
     bool m_shooting=false;
     double m_delay=0; //sec
+    QString m_working_directory;
 
     void take_screenshot();
+    void duplicate_last_screenshot();
 };
 
 ScreenShooter::ScreenShooter() {
@@ -31,6 +34,11 @@ ScreenShooter::~ScreenShooter() {
 void ScreenShooter::setCommand(QString cmd)
 {
     d->m_command=cmd;
+}
+
+void ScreenShooter::setWorkingDirectory(QString path)
+{
+    d->m_working_directory=path;
 }
 
 void ScreenShooter::setFramesPerSecond(double fps)
@@ -68,6 +76,11 @@ void ScreenShooter::slot_timer()
             qDebug() << QString("%1 shots taken in %2 seconds. That's %3 shots per sec. Compare with fps=%4").arg(d->m_num_screenshots_taken).arg(d->m_timer.elapsed()*1.0/1000).arg(d->m_num_screenshots_taken/(d->m_timer.elapsed()*1.0/1000)).arg(d->m_fps);
             qDebug() << d->m_num_screenshots_taken << d->m_fps*(d->m_timer.elapsed()*1.0/1000);
         }
+        while (d->m_num_screenshots_taken<d->m_fps*(d->m_timer.elapsed()*1.0/1000)) {
+            //catch up if we need to!!!
+            d->duplicate_last_screenshot();
+            d->m_num_screenshots_taken++;
+        }
     }
     QTimer::singleShot(100,this,SLOT(slot_timer()));
 }
@@ -77,5 +90,16 @@ void ScreenShooterPrivate::take_screenshot()
     qDebug() << "Screenshot: "+m_command;
     if (system(m_command.toLatin1().data())!=0) {
         qWarning() << "Non-zero exit code for screenshot";
+    }
+}
+
+void ScreenShooterPrivate::duplicate_last_screenshot()
+{
+    QStringList list=QDir(m_working_directory).entryList(QStringList("*.jpg"),QDir::Files,QDir::Time);
+    if (!list.isEmpty()) {
+        QString path1=m_working_directory+"/"+list.value(list.count()-1);
+        QString path2=QFileInfo(path1).path()+"/"+QFileInfo(path1).completeBaseName()+"-d.jpg";
+        qWarning() << "Duplicating to catch up:" << path1 << path2;
+        QFile::copy(path1,path2);
     }
 }
